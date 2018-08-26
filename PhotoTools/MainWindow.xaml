@@ -5,8 +5,103 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PhotoTools"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="图片整理小工具" Height="480" Width="800" MinWidth="800" MinHeight="480">
+
     <Grid>
-        
+        <!--Definition-->
+        <Grid.RowDefinitions >
+            <RowDefinition />
+            <RowDefinition Height="128" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions >
+            <ColumnDefinition Width="256" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <!--Panel-->
+        <Grid Grid.Row="1" Grid.Column="0"  Grid.ColumnSpan="2" Margin="2">
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0">
+                <GroupBox Header="修改文件" Margin="5">
+                    <Grid Margin="0">
+                        <Grid.ColumnDefinitions >
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <Label Content="选择源数据"/>
+                            <RadioButton Name="FielNameRB" Content="文件名" AutomationProperties.Name="FielNameRB"  Margin="5,2"  Checked="FielNameRB_Checked" />
+                            <RadioButton Name="FielModifyRB" Content="修改时间" AutomationProperties.Name="FielModifyRB" Margin="5,2" Checked="FielModifyRB_Checked" IsEnabled="False"/>
+                            <RadioButton Name="FielCreateRB" Content="拍摄时间" AutomationProperties.Name="FielCreateRB" Margin="5,2" Checked="FielCreateRB_Checked" IsEnabled="False"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <Label Content="选择修改数据"/>
+                            <CheckBox Name="FielNameCB" Content="文件名" AutomationProperties.Name="FielNameCB" Margin="5,2" />
+                            <CheckBox Name="FielCreateCB" Content="创建时间" AutomationProperties.Name="FielCreateCB" Margin="5,2" />
+                            <CheckBox Name="FielModifyCB" Content="修改时间" AutomationProperties.Name="FielModifyCB" Margin="5,2" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <Label Content=""/>
+                            <CheckBox Name="FielReadCB" Content="访问时间" AutomationProperties.Name="FielReadCB" Margin="5,2" />
+                        </StackPanel>
+                        <Button Content="应用" Name="ModifyBtn" AutomationProperties.Name="ModifyBtn" Click="ModifyBtn_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5,2" Width="56" Height="24" Grid.Column="3"/>
+                    </Grid>
+                </GroupBox>
+            </Border>
+            <Border Grid.Column="1" >
+                <GroupBox Header="图片归类整理">
+                    <Grid>
+                        <Grid.RowDefinitions >
+                            <RowDefinition Height="36" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <TextBox Height="24" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Margin="5,2,64,2" IsReadOnly="True" AutomationProperties.Name="SaveDir" Name="SaveDir"/>
+                            <Button Content="选择目录" HorizontalAlignment="Right" VerticalAlignment="Center" Width="56" Margin="5,2" Height="24" AutomationProperties.Name="SelectDir" Name="SelectDir" Click="SelectDir_Click"/>
+
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <Button Content="整理" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="56" Height="24" Margin="5" AutomationProperties.Name="MoveBtn" Name="MoveBtn" Click="MoveBtn_Click"/>
+                            <Label Content="文件将按照YY-MM-DD目录归类。" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top"/>
+                            <ProgressBar x:Name="MovePb" Height="12" Margin="5,0,64,5" VerticalAlignment="Bottom" Width="374"/>
+
+                        </Grid>
+
+
+                    </Grid>
+
+                </GroupBox>
+            </Border>
+
+        </Grid>
+        <Border Grid.Row="0" Grid.Column="0" Margin="2" >
+            <TreeView x:Name="directoryTreeView">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type local:DirectoryRecord}"
+                                  ItemsSource="{Binding Directories}" >
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Images/folder.png" Width="16" Height="16"/>
+                            <TextBlock Text="{Binding Info.Name}"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </Border>
+        <Border Grid.Row="0" Grid.Column="1" Margin="2" >
+            <DataGrid x:Name="fileInfo"
+          GridLinesVisibility="Vertical" VerticalGridLinesBrush="Gray"
+          ItemsSource="{Binding ElementName=directoryTreeView, Path=SelectedItem.Files, Mode=OneWay}">
+
+            </DataGrid>
+        </Border>
+
+        <!--Splitter-->
+        <GridSplitter Grid.Row="0" Grid.Column="0" Background="Transparent"                     HorizontalAlignment="Right"   VerticalAlignment="Stretch" Width="5"  />
+
     </Grid>
 </Window>
